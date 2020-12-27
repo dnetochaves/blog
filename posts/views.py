@@ -4,6 +4,7 @@ from django.views.generic.edit import UpdateView
 from . models import Post
 from django.db.models import Q, Count, Case, When
 from comentarios.models import Comentarios
+from categorias.models import Categoria
 from comentarios.forms import FormComentario
 from django.contrib import messages
 
@@ -13,6 +14,13 @@ class PostIndex(ListView):
     template_name = 'posts/index.html'
     paginate_by = 3
     context_object_name = 'posts'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['categorias'] = Categoria.objects.all()
+        return context
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -27,6 +35,9 @@ class PostIndex(ListView):
         )
 
         return qs
+    
+    
+   
 
 
 class PostBusca(PostIndex):
